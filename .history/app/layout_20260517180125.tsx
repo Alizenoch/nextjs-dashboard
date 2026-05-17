@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavLinks from "./NavLinks"; // adjust path if you put NavLinks in a components/ folder
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +31,13 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans bg-zinc-50 dark:bg-black">
         <header className="w-full border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black px-6 py-4">
-          <NavLinks />
+          <nav className="flex gap-6">
+            <Link href="/">Home</Link>
+            <Link href="/dashboard">Dashboard</Link>
+            <Link href="/invoices">Invoices</Link>
+            <Link href="/customers">Customers</Link>
+            <Link href="/settings">Settings</Link>
+          </nav>
         </header>
         <main className="p-6 flex-1">{children}</main>
       </body>

@@ -40,8 +40,6 @@ export default function Page() {
           <h1 className={`${lusitana.className} text-2xl font-bold`}>
             Dashboard
           </h1>
-
-          {/* Cards */}
           <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="rounded-lg bg-white p-4 shadow">
               <p className="text-sm text-gray-500">Collected</p>
@@ -55,49 +53,6 @@ export default function Page() {
               <p className="text-sm text-gray-500">Invoices</p>
               <p className="text-xl font-bold">22</p>
             </div>
-          </div>
-
-          {/* Revenue Chart */}
-          <div className="mt-6 rounded-lg bg-white p-4 shadow">
-            <h2 className="text-lg font-semibold">Recent Revenue</h2>
-            <div className="mt-4 h-48 bg-gray-100 flex items-end gap-2 p-2">
-              {/* Fake bars for now */}
-              <div className="w-8 bg-blue-500 h-16"></div>
-              <div className="w-8 bg-blue-500 h-24"></div>
-              <div className="w-8 bg-blue-500 h-12"></div>
-              <div className="w-8 bg-blue-500 h-20"></div>
-              <div className="w-8 bg-blue-500 h-28"></div>
-              <div className="w-8 bg-blue-500 h-10"></div>
-            </div>
-          </div>
-
-          {/* Invoices Table */}
-          <div className="mt-6 rounded-lg bg-white p-4 shadow">
-            <h2 className="text-lg font-semibold">Invoices</h2>
-            <table className="mt-4 w-full text-left">
-              <thead>
-                <tr>
-                  <th className="py-2">Customer</th>
-                  <th className="py-2">Email</th>
-                  <th className="py-2">Amount</th>
-                  <th className="py-2">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="py-2">85842ba0…</td>
-                  <td className="py-2">customer@example.com</td>
-                  <td className="py-2">$1,200.00</td>
-                  <td className="py-2">Dec 6, 2022</td>
-                </tr>
-                <tr>
-                  <td className="py-2">c3a9f1d2…</td>
-                  <td className="py-2">client@example.com</td>
-                  <td className="py-2">$850.00</td>
-                  <td className="py-2">Jan 15, 2023</td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </section>
       </div>
