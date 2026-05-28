@@ -38,7 +38,7 @@ export default async function Page() {
     status: String(row.status),
   }));
 
-  // Card totals (object style)
+  // Card totals (object style) — fixed property names
   const collectedResult = await sql`
     SELECT COALESCE(SUM(amount),0)::int AS collected FROM invoices WHERE status = 'paid';
   `;
@@ -53,10 +53,10 @@ export default async function Page() {
   `;
 
   const cardData = {
-    totalPaidInvoices: collectedResult.rows[0]?.collected ?? 0,
-    totalPendingInvoices: pendingResult.rows[0]?.pending ?? 0,
-    numberOfInvoices: invoiceCountResult.rows[0]?.count ?? 0,
-    numberOfCustomers: customerCountResult.rows[0]?.count ?? 0,
+    paidInvoices: collectedResult.rows[0]?.collected ?? 0,
+    pendingInvoices: pendingResult.rows[0]?.pending ?? 0,
+    totalInvoices: invoiceCountResult.rows[0]?.count ?? 0,
+    totalCustomers: customerCountResult.rows[0]?.count ?? 0,
   };
 
   // Transform revenue for chart
