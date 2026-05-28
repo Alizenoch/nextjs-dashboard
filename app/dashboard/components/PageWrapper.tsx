@@ -4,10 +4,11 @@ import { useState } from "react";
 import Card from "./Card";
 import { Lusitana } from "next/font/google";
 import { ReactNode } from "react";
-import type { CardData } from "../../lib/data";   // ✅ reuse the exported type
+import type { DashboardData } from "../../../lib/data";
+  // ✅ use the right type
 
 interface PageWrapperProps {
-  cardData: CardData;
+  cardData: DashboardData;   // ✅ matches lib/data.ts
   lusitana: ReturnType<typeof Lusitana>;
   children: ReactNode;
 }
@@ -15,7 +16,7 @@ interface PageWrapperProps {
 export default function PageWrapper({ cardData, lusitana, children }: PageWrapperProps) {
   const [currency, setCurrency] = useState<"USD" | "PGK">("USD");
 
-  const { numberOfInvoices, numberOfCustomers, totalPaidInvoices, totalPendingInvoices } = cardData;
+  const { totalInvoices, totalCustomers, paidInvoices, pendingInvoices } = cardData;
 
   return (
     <div className="space-y-8">
@@ -31,10 +32,10 @@ export default function PageWrapper({ cardData, lusitana, children }: PageWrappe
 
       {/* Top row: summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card title="Collected" value={totalPaidInvoices} currency={currency} lusitana={lusitana} />
-        <Card title="Pending" value={totalPendingInvoices} currency={currency} lusitana={lusitana} />
-        <Card title="Invoices" value={numberOfInvoices} currency={currency} lusitana={lusitana} />
-        <Card title="Customers" value={numberOfCustomers} currency={currency} lusitana={lusitana} />
+        <Card title="Collected" value={paidInvoices} currency={currency} lusitana={lusitana} />
+        <Card title="Pending" value={pendingInvoices} currency={currency} lusitana={lusitana} />
+        <Card title="Invoices" value={totalInvoices} currency={currency} lusitana={lusitana} />
+        <Card title="Customers" value={totalCustomers} currency={currency} lusitana={lusitana} />
       </div>
 
       {/* Middle row: chart + invoices */}
