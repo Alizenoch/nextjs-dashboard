@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+/* Force a light gray workspace and dark text as the fallback */
+body {
+  background-color: #f8fafc; /* Tailwind's slate-50 */
+  color: #0f172a;            /* Tailwind's slate-900 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
