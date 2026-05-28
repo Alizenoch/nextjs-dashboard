@@ -20,14 +20,11 @@ export default async function InvoicesPage() {
             ← Back to Dashboard
           </Link>
           <Link
-  href="/invoices/create"
-  className="bg-blue-300 text-black font-extrabold text-lg px-5 py-2 rounded shadow hover:bg-blue-700 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-blue-500"
->
-  + New Invoice
-</Link>
-
-      
-
+            href="/invoices/create"
+            className="bg-blue-300 text-black font-extrabold text-lg px-5 py-2 rounded shadow hover:bg-blue-700 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-blue-500"
+          >
+            + New Invoice
+          </Link>
         </div>
       </div>
 
@@ -64,7 +61,7 @@ export default async function InvoicesPage() {
                 </span>
               </td>
               <td className="p-3 text-gray-600">
-                {new Date(invoice.date).toLocaleDateString('en-US', {
+                {new Date(invoice.dueDate).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric',
@@ -77,7 +74,6 @@ export default async function InvoicesPage() {
                 >
                   Edit
                 </Link>
-                {/* Accessible delete button with aria-label */}
                 <DeleteInvoiceButton
                   id={invoice.id}
                   aria-label={`Delete invoice for ${invoice.customer}`}
