@@ -1,1 +1,0 @@
-import InvoicesTable from "./InvoicesTable";
