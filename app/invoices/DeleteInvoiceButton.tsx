@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { deleteInvoice } from '@/lib/actions';
-
+import toast from 'react-hot-toast';
 
 export function DeleteInvoiceButton({ id }: { id: string }) {
   const router = useRouter();
@@ -17,9 +17,11 @@ export function DeleteInvoiceButton({ id }: { id: string }) {
 
     try {
       await deleteInvoice(id);
+      toast.success('Invoice deleted successfully!');
       router.refresh();
       setShowModal(false); // close modal after success
     } catch {
+      toast.error('Failed to delete invoice');
       setError('Failed to delete invoice');
     } finally {
       setLoading(false);

@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { updateInvoice } from '../../../../lib/data'; // <-- use lib/data now
+import { updateInvoice } from '@/lib/actions'; // <-- correct path
 
 export default function EditInvoiceForm({ invoice }: { invoice: any }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
+    customer: invoice.customer, // include customer
     amount: invoice.amount,
     status: invoice.status,
-    date: invoice.date.split("T")[0], // normalize ISO → YYYY-MM-DD
+    dueDate: invoice.dueDate.split("T")[0], // normalize ISO → YYYY-MM-DD
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,13 +23,9 @@ export default function EditInvoiceForm({ invoice }: { invoice: any }) {
     setSuccess(false);
 
     try {
-      const ok = await updateInvoice(Number(invoice.id), formData);
-      if (ok) {
-        setSuccess(true);
-        router.push('/invoices'); // back to invoices list
-      } else {
-        setError('Something went wrong. Please try again.');
-      }
+      await updateInvoice(invoice.id, formData); // id + full data
+      setSuccess(true);
+      router.push('/invoices'); // back to invoices list
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
@@ -38,6 +35,13 @@ export default function EditInvoiceForm({ invoice }: { invoice: any }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <input
+        type="text"
+        value={formData.customer}
+        onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
+        required
+        className="border p-2 w-full"
+      />
       <input
         type="number"
         value={formData.amount}
@@ -56,8 +60,8 @@ export default function EditInvoiceForm({ invoice }: { invoice: any }) {
       </select>
       <input
         type="date"
-        value={formData.date}
-        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+        value={formData.dueDate}
+        onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
         required
         className="border p-2 w-full"
       />
