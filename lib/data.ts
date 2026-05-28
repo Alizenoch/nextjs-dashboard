@@ -13,7 +13,7 @@ export type Invoice = {
   email?: string;
   amount: number;
   status: "pending" | "paid";
-  date: string;
+  dueDate: string; // renamed from date for clarity
 };
 
 export async function fetchCardData(): Promise<DashboardData> {
@@ -32,7 +32,7 @@ export async function fetchCardData(): Promise<DashboardData> {
   };
 }
 
-export async function fetchRevenue(): Promise<{ date: string; amount: number }[]> {
+export async function fetchRevenue(): Promise<{ dueDate: string; amount: number }[]> {
   const result = await sql`
     SELECT date, amount 
     FROM invoices 
@@ -40,7 +40,7 @@ export async function fetchRevenue(): Promise<{ date: string; amount: number }[]
     ORDER BY date ASC
   `;
   return result.rows.map(r => ({
-    date: r.date instanceof Date ? r.date.toISOString() : new Date(String(r.date)).toISOString(),
+    dueDate: r.date instanceof Date ? r.date.toISOString() : new Date(String(r.date)).toISOString(),
     amount: Number(r.amount),
   }));
 }
@@ -62,7 +62,7 @@ export async function fetchInvoiceById(id: number): Promise<Invoice | null> {
           email: r.email ?? "",
           amount: Number(r.amount),
           status: r.status as "pending" | "paid",
-          date: r.date instanceof Date
+          dueDate: r.date instanceof Date
             ? r.date.toISOString()
             : new Date(String(r.date)).toISOString(),
         }
@@ -97,7 +97,7 @@ export async function fetchInvoices(search?: string): Promise<Invoice[]> {
       email: r.email ?? "",
       amount: Number(r.amount),
       status: r.status as "pending" | "paid",
-      date: r.date instanceof Date ? r.date.toISOString() : new Date(String(r.date)).toISOString(),
+      dueDate: r.date instanceof Date ? r.date.toISOString() : new Date(String(r.date)).toISOString(),
     }));
   } catch (err) {
     console.error("fetchInvoices error:", err);
@@ -107,14 +107,17 @@ export async function fetchInvoices(search?: string): Promise<Invoice[]> {
 
 export async function updateInvoice(
   id: number,
-  data: { amount: number; status: "pending" | "paid"; date: string }
+  data: { customer: string; amount: number; status: "pending" | "paid"; dueDate: string }
 ): Promise<boolean> {
   try {
     await sql`
       UPDATE invoices
-      SET amount = ${data.amount},
+      SET customer_id = (
+            SELECT id FROM customers WHERE name = ${data.customer} LIMIT 1
+          ),
+          amount = ${data.amount},
           status = ${data.status},
-          date = ${data.date}
+          date = ${data.dueDate}
       WHERE id = ${id};
     `;
     return true;
