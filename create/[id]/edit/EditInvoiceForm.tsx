@@ -1,61 +1,81 @@
-// app/invoices/create/[id]/edit/EditInvoiceForm.tsx
 'use client';
 
-import { useFormState } from 'react-dom';
-import { updateInvoice } from '@/app/lib/actions';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { updateInvoice } from '@/lib/actions';
 
-type FormState = {
-  errors: {
-    customer?: string[];
-    amount?: string[];
-    status?: string[];
-    dueDate?: string[];
-  };
-};
+export default function EditInvoiceForm({ invoice }: { invoice: any }) {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    customer: invoice.customer,
+    amount: invoice.amount,
+    status: invoice.status,
+    dueDate: invoice.dueDate.split("T")[0], // normalize ISO → YYYY-MM-DD
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
-const initialState: FormState = { errors: {} };
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
 
-export default function EditInvoiceForm({ id, invoice }: { id: string; invoice: any }) {
-  // Correct signature: (prevState, formData)
-  const action = async (prevState: FormState, formData: FormData): Promise<FormState> => {
-    return await updateInvoice(id, {
-      customer: formData.get('customer')?.toString() || '',
-      amount: Number(formData.get('amount')),
-      status: formData.get('status')?.toString() as 'pending' | 'paid',
-      dueDate: formData.get('dueDate')?.toString() || '',
-    });
-  };
-
-  const [state, formAction] = useFormState(action, initialState);
+    try {
+      await updateInvoice(invoice.id, formData); // use invoice.id directly
+      setSuccess(true);
+      router.push('/invoices');
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <form action={formAction} className="space-y-4">
-      <div>
-        <input name="customer" defaultValue={invoice.customer} className="border p-2 w-full" />
-        {state.errors?.customer && <p className="text-red-600">{state.errors.customer}</p>}
-      </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <input
+        type="text"
+        value={formData.customer}
+        onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
+        required
+        className="border p-2 w-full"
+      />
+      <input
+        type="number"
+        value={formData.amount}
+        onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+        required
+        className="border p-2 w-full"
+      />
+      <select
+        value={formData.status}
+        onChange={(e) => setFormData({ ...formData, status: e.target.value as 'pending' | 'paid' })}
+        required
+        className="border p-2 w-full"
+      >
+        <option value="pending">Pending</option>
+        <option value="paid">Paid</option>
+      </select>
+      <input
+        type="date"
+        value={formData.dueDate}
+        onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+        required
+        className="border p-2 w-full"
+      />
 
-      <div>
-        <input name="amount" type="number" defaultValue={invoice.amount} className="border p-2 w-full" />
-        {state.errors?.amount && <p className="text-red-600">{state.errors.amount}</p>}
-      </div>
-
-      <div>
-        <select name="status" defaultValue={invoice.status} className="border p-2 w-full">
-          <option value="pending">Pending</option>
-          <option value="paid">Paid</option>
-        </select>
-        {state.errors?.status && <p className="text-red-600">{state.errors.status}</p>}
-      </div>
-
-      <div>
-        <input name="dueDate" type="date" defaultValue={invoice.dueDate} className="border p-2 w-full" />
-        {state.errors?.dueDate && <p className="text-red-600">{state.errors.dueDate}</p>}
-      </div>
-
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-        Update Invoice
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-blue-600 text-white px-4 py-2 rounded"
+      >
+        {loading ? 'Updating…' : 'Update Invoice'}
       </button>
+
+      {error && <p className="text-red-600">{error}</p>}
+      {success && <p className="text-green-600">Invoice updated successfully!</p>}
     </form>
   );
 }

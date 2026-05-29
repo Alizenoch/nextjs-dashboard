@@ -2,7 +2,7 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { createInvoice } from '@/app/lib/actions';
+import { createInvoice } from '@/lib/actions';
 
 type FormState = {
   errors: {
